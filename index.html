@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetSight — Network Traffic Analysis & Threat Investigation</title>
+  <link rel="preconnect" href="[fonts.googleapis.com](https://fonts.googleapis.com)">
+  <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;800;900&display=swap)" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-shapes">
+      <span class="sq"></span><span class="ci"></span><span class="tr"></span>
+    </div>
+    <p class="loader-title" data-i18n="loading">CHARGING PROJECT</p>
+    <div class="battery">
+      <div class="cells" id="cells"></div>
+      <div class="battery-tip"></div>
+    </div>
+    <p class="loader-pct"><span id="pct">0</span>%</p>
+  </div>
+
+  <canvas id="stars"></canvas>
+  <div id="tip"></div>
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="b-sq"></span><span class="b-ci"></span><span class="b-tr"></span>
+      <strong>NETSIGHT</strong>
+    </div>
+    <div class="controls">
+      <div class="accents" id="accents">
+        <button class="sw" data-c="#e63946" style="--c:#e63946" aria-label="red"></button>
+        <button class="sw" data-c="#1d4ed8" style="--c:#1d4ed8" aria-label="blue"></button>
+        <button class="sw" data-c="#f4c430" style="--c:#f4c430" aria-label="yellow"></button>
+        <button class="sw" data-c="#10b981" style="--c:#10b981" aria-label="green"></button>
+        <label class="sw picker" aria-label="custom"><input type="color" id="picker" value="#e63946"></label>
+      </div>
+      <button id="langBtn" class="pill">FR</button>
+      <button id="themeBtn" class="theme" aria-label="theme">
+        <span class="knob"></span>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><g stroke-width="2"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg>
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <p class="tag" data-i18n="tag">CASE STUDY · SOC ANALYSIS · 24H CAPTURE</p>
+        <h1 data-i18n="title">Network Traffic Analysis & Threat Investigation</h1>
+        <p class="lead" data-i18n="lead">24 hours of corporate network traffic (≈1.28M packets) captured and analyzed. Goal: detect threats hidden in DNS, HTTP and TCP flows, and turn them into business decisions.</p>
+        <div class="method">
+          <span data-i18n="m1">01 CAPTURE</span><span data-i18n="m2">02 ANALYZE</span><span data-i18n="m3">03 DETECT</span><span data-i18n="m4">04 ACT</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="a1"></div><div class="a2"></div><div class="a3"></div><div class="a4"></div>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="kpis">
+      <div class="kpi"><span class="k-label" data-i18n="k1">Packets captured</span><span class="k-val" data-count="1284736">0</span></div>
+      <div class="kpi"><span class="k-label" data-i18n="k2">DNS queries</span><span class="k-val" data-count="48212">0</span></div>
+      <div class="kpi"><span class="k-label" data-i18n="k3">HTTP requests</span><span class="k-val" data-count="21904">0</span></div>
+      <div class="kpi"><span class="k-label" data-i18n="k4">TCP sessions</span><span class="k-val" data-count="96430">0</span></div>
+      <div class="kpi alert"><span class="k-label" data-i18n="k5">Security alerts</span><span class="k-val" data-count="37">0</span></div>
+      <div class="kpi"><span class="k-label" data-i18n="k6">Data volume (GB)</span><span class="k-val" data-count="18.6" data-dec="1">0</span></div>
+    </section>
+
+    <!-- CAPTURE -->
+    <section class="block">
+      <div class="block-head">
+        <h2><span class="num">01</span> <span data-i18n="capTitle">Live Packet Capture</span></h2>
+        <button id="capBtn" class="pill solid" data-i18n="pause">PAUSE</button>
+      </div>
+      <p class="sub" data-i18n="capSub">Simulated tcpdump/Wireshark stream. Flagged packets are highlighted.</p>
+      <div class="table-wrap">
+        <table class="cap">
+          <thead><tr><th>#</th><th data-i18n="time">Time</th><th data-i18n="src">Source</th><th data-i18n="dst">Destination</th><th data-i18n="proto">Proto</th><th data-i18n="len">Len</th><th data-i18n="info">Info</th></tr></thead>
+          <tbody id="capBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="block">
+      <div class="block-head">
+        <h2><span class="num">02</span> <span data-i18n="anTitle">Traffic Analysis</span></h2>
+        <span class="hint" data-i18n="hint">▲ Click any chart for explanation</span>
+      </div>
+      <div class="grid">
+        <div class="card wide" data-info="traffic"><div class="c-head"><h3 data-i18n="c1">Bandwidth over 24h (Mbps)</h3><span class="i">i</span></div><canvas id="cTraffic"></canvas></div>
+        <div class="card" data-info="proto"><div class="c-head"><h3 data-i18n="c2">Protocol mix</h3><span class="i">i</span></div><canvas id="cProto"></canvas></div>
+        <div class="card" data-info="dns"><div class="c-head"><h3 data-i18n="c3">Top DNS domains (queries)</h3><span class="i">i</span></div><canvas id="cDns"></canvas></div>
+        <div class="card" data-info="http"><div class="c-head"><h3 data-i18n="c4">HTTP status codes</h3><span class="i">i</span></div><canvas id="cHttp"></canvas></div>
+        <div class="card" data-info="tcp"><div class="c-head"><h3 data-i18n="c5">TCP flags distribution</h3><span class="i">i</span></div><canvas id="cTcp"></canvas></div>
+        <div class="card" data-info="sev"><div class="c-head"><h3 data-i18n="c6">Alerts by severity</h3><span class="i">i</span></div><canvas id="cSev"></canvas></div>
+      </div>
+    </section>
+
+    <!-- THREATS -->
+    <section class="block">
+      <div class="block-head"><h2><span class="num">03</span> <span data-i18n="thTitle">Suspicious Activity Identified</span></h2></div>
+      <div class="table-wrap">
+        <table class="threats">
+          <thead><tr><th data-i18n="time">Time</th><th data-i18n="src">Source</th><th data-i18n="dst">Destination</th><th data-i18n="type">Threat</th><th data-i18n="evidence">Evidence</th><th data-i18n="sev">Severity</th></tr></thead>
+          <tbody id="thBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section class="block">
+      <div class="block-head"><h2><span class="num">04</span> <span data-i18n="inTitle">Business Insights</span></h2></div>
+      <div class="insights" id="insights"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span data-i18n="foot">Built with HTML · CSS · JavaScript — simulated data for portfolio purposes.</span>
+    <span class="f-shapes"><i></i><b></b><u></u></span>
+  </footer>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="m-box">
+      <div class="m-bar"><span id="mTitle"></span><button id="mClose">✕</button></div>
+      <div class="m-body">
+        <h4 data-i18n="what">WHAT IT SHOWS</h4><p id="mWhat"></p>
+        <h4 data-i18n="find">KEY FINDING</h4><p id="mFind"></p>
+        <h4 data-i18n="biz">BUSINESS IMPACT</h4><p id="mBiz"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
